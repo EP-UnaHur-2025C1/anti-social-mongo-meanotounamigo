@@ -1,21 +1,14 @@
 const mongoose = require('mongoose')
 
-const tagSchame = new mongoose.Schema({
-    fecha:{
-        type: Date,
-        required: true
-    },
-
-    descripcion:{
+const tagSchema = new mongoose.Schema({
+    nombre: {
         type: String,
+        unique: true,
         required: true,
-        validate:{
-            validator: function(v){
-                return v.trime().length > 0;
-            },
-            message: 'La descripción no puede estar vacía'
-        }
+        trime: true //elimina espacios adelante y atras
     }
-})
+},
+{timestamps:false}
+)
 
-module.exports = mongoose.model('Tag',tagSchame )
+module.exports = mongoose.model('Tag', tagSchema)

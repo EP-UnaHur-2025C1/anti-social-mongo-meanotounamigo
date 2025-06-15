@@ -14,6 +14,8 @@ const userSchema = new mongoose.Schema({
         unique:true, 
         required:[true, 'El mail es obligatorio']
     }
-})
+},
+{timestamps:false}
+)
 
 module.exports = mongoose.model('User', userSchema)
