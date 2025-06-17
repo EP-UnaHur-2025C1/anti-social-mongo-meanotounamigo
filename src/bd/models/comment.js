@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const commentsSchema = new mongoose.Schema({
     contenido:{
         type: String,
-        required: true
+        required: true,
+        trim: true //elimina espacios vacios adelante y atras
     },
 
     fecha: {

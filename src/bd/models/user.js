@@ -6,13 +6,15 @@ const userSchema = new mongoose.Schema({
         required: true, 
         unique:true, 
         minlength:[3,'El nombre debe tener al menos 3 letras'], 
-        required:[true, 'El nombre es obligatorio']
+        required:[true, 'El nombre es obligatorio'],
+        trim: true //elimina espacios adelante y atras
     },
     email:{
         type: String, 
         required: true, 
         unique:true, 
-        required:[true, 'El mail es obligatorio']
+        required:[true, 'El mail es obligatorio'],
+        trime: true //elimina espacios adelante y atras
     }
 },
 {timestamps:false}
