@@ -50,4 +50,13 @@ const deleteTagById = async (req, res) =>{
     }
 }
 
-module.exports = { getTags, getTagById, createTag, updateTagById, deleteTagById }
+module.exports = { 
+    getTags, 
+    getTagById, 
+    createTag, 
+    updateTagById, 
+    deleteTagById,
+    //assignTagToPost, 
+    //deletePostFromTag, 
+    //getPostsByTagId 
+}
