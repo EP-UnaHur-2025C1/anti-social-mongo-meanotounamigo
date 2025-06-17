@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+const { mongoose } = require('../bd/mongodb');
+const { Schema } = require('mongoose')
 
 const postSchame = new mongoose.Schema({
     fecha:{
@@ -17,7 +18,10 @@ const postSchame = new mongoose.Schema({
         }
     }
 },
-{timestamps:false}
-)
+{
+    collation:'posteos'
+}
+);
 
-module.exports = mongoose.model('Post',postSchame )
+const Posteo = mongoose.model('Post',postSchame );
+module.exports = Posteo;

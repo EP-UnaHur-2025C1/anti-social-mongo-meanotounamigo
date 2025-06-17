@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const MONGO_URL = process.env.MONGO_URL??"mongodb://root:example@localhost:27017/libros?authSource=admin";
+const MONGO_URL = process.env.MONGO_URL??"mongodb://root:example@localhost:27017/redSocial?authSource=admin";
 
 let isConnected;
 

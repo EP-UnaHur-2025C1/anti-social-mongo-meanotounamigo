@@ -1,9 +1,9 @@
-const mongoose = require('mongoose')
+const { mongoose } = require('../bd/mongodb');
+const { Schema } = require('mongoose')
 
 const userSchema = new mongoose.Schema({
     nickname:{
         type: String, 
-        required: true, 
         unique:true, 
         minlength:[3,'El nombre debe tener al menos 3 letras'], 
         required:[true, 'El nombre es obligatorio'],
@@ -14,10 +14,13 @@ const userSchema = new mongoose.Schema({
         required: true, 
         unique:true, 
         required:[true, 'El mail es obligatorio'],
-        trime: true //elimina espacios adelante y atras
+        trim: true //elimina espacios adelante y atras
     }
 },
-{timestamps:false}
-)
+{
+    collection:'usuarios'
+}
+);
 
-module.exports = mongoose.model('User', userSchema)
+const Usuario = mongoose.model('User', userSchema);
+module.exports = Usuario;

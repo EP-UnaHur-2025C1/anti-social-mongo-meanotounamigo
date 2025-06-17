@@ -1,9 +1,10 @@
-const mongoose = require('mongoose')
+const { mongoose } = require('../bd/mongodb');
+const { Schema } = require('mongoose')
 
 const commentsSchema = new mongoose.Schema({
     contenido:{
         type: String,
-        required: true,
+        required: [true, 'El contenido es obligatorio'],
         trim: true //elimina espacios vacios adelante y atras
     },
 
@@ -19,7 +20,10 @@ const commentsSchema = new mongoose.Schema({
         default: true
     }
 },
-{timestamps:false}
-)
+{
+    collation:'comentarios'
+}
+);
 
-module.exports = mongoose.model('Comment', commentsSchema)
+const Comentario = mongoose.model('Comment', commentsSchema);
+module.exports = Comentario;
