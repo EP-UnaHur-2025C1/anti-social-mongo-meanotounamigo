@@ -6,7 +6,6 @@ const tagSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required:[true, 'El nombre es obligatorio'],
-        trim: true //elimina espacios vacios adelante y atras
     }
 },
 {

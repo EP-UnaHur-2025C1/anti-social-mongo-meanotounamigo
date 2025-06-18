@@ -5,7 +5,6 @@ const commentsSchema = new mongoose.Schema({
     contenido:{
         type: String,
         required: [true, 'El contenido es obligatorio'],
-        trim: true //elimina espacios vacios adelante y atras
     },
 
     fecha: {
