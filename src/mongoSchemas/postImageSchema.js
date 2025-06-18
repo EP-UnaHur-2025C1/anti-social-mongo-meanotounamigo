@@ -12,6 +12,13 @@ const postImageSchame = new mongoose.Schema({
 }
 );
 
-const PostImage = mongoose.model('PostImage', postImageSchame);
+//Modifica cómo se ve a la salida
+postSchame.set("toJSON", {
+    transform:(_,ret)=>{
+        delete ret._v
+        delete ret._id
+    }
+})
 
+const PostImage = mongoose.model('PostImage', postImageSchame);
 module.exports = PostImage;

@@ -22,5 +22,13 @@ const userSchema = new mongoose.Schema({
 }
 );
 
+//Modifica cómo se ve a la salida
+postSchame.set("toJSON", {
+    transform:(_,ret)=>{
+        delete ret._v
+        delete ret._id
+    }
+})
+
 const Usuario = mongoose.model('User', userSchema);
 module.exports = Usuario;

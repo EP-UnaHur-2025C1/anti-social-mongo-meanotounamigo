@@ -10,9 +10,17 @@ const tagSchema = new mongoose.Schema({
     }
 },
 {
-    collection:'etiquetas';
+    collection:'etiquetas'
 }
 );
+
+//Modifica cómo se ve a la salida
+postSchame.set("toJSON", {
+    transform:(_,ret)=>{
+        delete ret._v
+        delete ret._id
+    }
+})
 
 const Tag = mongoose.model('Tag', tagSchema);
 module.exports = Tag;

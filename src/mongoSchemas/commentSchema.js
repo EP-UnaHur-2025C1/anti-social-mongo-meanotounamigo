@@ -25,5 +25,13 @@ const commentsSchema = new mongoose.Schema({
 }
 );
 
+//Modifica cómo se ve a la salida
+postSchame.set("toJSON", {
+    transform:(_,ret)=>{
+        delete ret._v
+        delete ret._id
+    }
+})
+
 const Comentario = mongoose.model('Comment', commentsSchema);
 module.exports = Comentario;
