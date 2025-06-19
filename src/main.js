@@ -1,7 +1,32 @@
+require("dotenv").config();
 const express = require ('express');
 const {connectToDataBase} = require('./bd/mongodb');
 const app = express(); 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3009;
+
+//Swagger
+//const path = require('path');
+//const swaggerUi = require('swagger-ui-express');
+//const YAML = require('yamljs');
+// Construir ruta absoluta al archivo swagger.yaml
+//const swaggerPath = path.join(__dirname, '..', 'docs', 'swagger.yaml');
+//const swaggerDocument = YAML.load(swaggerPath);
+
+//Usa la ruta para el swagger
+//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Importa las rutas
+const { userRoute, postRoute, tagRoute } = require('./routes'); //, postImageRoute, commentRoute
+
+// Middleware para procesar JSON
+app.use(express.json());
+
+// Usa las rutas de post con el prefijo /post
+app.use('/post', postRoute);
+app.use('/user', userRoute);
+//app.use('/post-image', postImageRoute);
+//app.use('/comment', commentRoute);
+app.use('/tag', tagRoute);
 
 
 app.listen(PORT, async(err) =>{
