@@ -1,7 +1,7 @@
 services:
 
   mongo:
-    image: mongo:latest
+    image: mongo:7.0
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
@@ -21,3 +21,32 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH: false
+
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - 3009:3009
+    environment:
+      - NODE_ENV=docker
+      - PORT=3009
+      - MONGO_URI=mongodb://root:example@mongo:27017/
+      - COMMENT_EXPIRATION_MONTHS=6
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=1qaz!QAZ
+      - REDIS_TTL=60
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    depends_on:
+      - mongo
+      - redis
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
