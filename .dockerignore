@@ -1,0 +1,12 @@
+# Módulos locales de Node
+node_modules
+
+# Configuraciones sensibles
+.env
+
+# Datos persistentes de Mongo
+mongo_data/
+
+# Archivos temporales o de sistema
+.DS_Store
+Thumbs.db

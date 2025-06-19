@@ -1,4 +1,4 @@
-const { Comment, Post, User } = require('../bd/models');
+const { Comment, Post, User } = require('../mongoSchemas');
 
 const deleteCommentById = async (req, res) =>{
     try{

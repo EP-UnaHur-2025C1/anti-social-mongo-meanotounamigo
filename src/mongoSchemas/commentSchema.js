@@ -1,7 +1,7 @@
 const { mongoose } = require('../bd/mongodb');
-const { Schema } = require('mongoose')
+const { Schema } = require('mongoose');
 
-const commentsSchema = new mongoose.Schema({
+const commentSchema = new mongoose.Schema({
     contenido:{
         type: String,
         required: [true, 'El contenido es obligatorio'],
@@ -25,12 +25,13 @@ const commentsSchema = new mongoose.Schema({
 );
 
 //Modifica cómo se ve a la salida
-postSchame.set("toJSON", {
+commentSchema.set("toJSON", {
     transform:(_,ret)=>{
-        delete ret._v
-        delete ret._id
+        delete ret.__v
+        ret.id = ret._id;
+        delete ret._id;
     }
 })
 
-const Comentario = mongoose.model('Comment', commentsSchema);
+const Comentario = mongoose.model('Comment', commentSchema);
 module.exports = Comentario;

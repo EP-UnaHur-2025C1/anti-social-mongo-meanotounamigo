@@ -1,4 +1,4 @@
-const { User } = require('../bd/models');
+const { User } = require('../mongoSchemas');
 
 
 module.exports = { 

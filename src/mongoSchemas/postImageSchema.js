@@ -1,7 +1,7 @@
 const { mongoose } = require('../bd/mongodb');
 const { Schema } = require('mongoose')
 
-const postImageSchame = new mongoose.Schema({
+const postImageSchema = new mongoose.Schema({
     url:{
         type: String,
         require: [true, 'La URL es obligatoria'],
@@ -13,12 +13,13 @@ const postImageSchame = new mongoose.Schema({
 );
 
 //Modifica cómo se ve a la salida
-postSchame.set("toJSON", {
+postImageSchema.set("toJSON", {
     transform:(_,ret)=>{
-        delete ret._v
-        delete ret._id
+        delete ret.__v
+        ret.id = ret._id;
+        delete ret._id;
     }
 })
 
-const PostImage = mongoose.model('PostImage', postImageSchame);
+const PostImage = mongoose.model('PostImage', postImageSchema);
 module.exports = PostImage;

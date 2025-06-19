@@ -1,4 +1,4 @@
-const { Router } = require("express");
+/*const { Router } = require("express");
 const router = Router();
 const { Comment } = require('../mongoSchemas');
 const { commentController } = require("../controllers");
@@ -17,4 +17,4 @@ router.get("/:id/post",genericMiddleware.validId, genericMiddleware.existsModelB
 //Puedo ver el post y usuario al cual pertenece la imagen
 router.get('/:id/post/user', genericMiddleware.validId, genericMiddleware.existsModelById(Comment), commentController.getCommentWithPostAndUser);
 
-module.exports = router;
+module.exports = router;*/

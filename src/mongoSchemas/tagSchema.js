@@ -1,10 +1,10 @@
 const { mongoose } = require('../bd/mongodb');
-const { Schema } = require('mongoose')
 
 const tagSchema = new mongoose.Schema({
     nombre: {
         type: String,
         unique: true,
+        trim: true,
         required:[true, 'El nombre es obligatorio'],
     }
 },
@@ -14,10 +14,11 @@ const tagSchema = new mongoose.Schema({
 );
 
 //Modifica cómo se ve a la salida
-postSchame.set("toJSON", {
+tagSchema.set("toJSON", {
     transform:(_,ret)=>{
-        delete ret._v
-        delete ret._id
+        delete ret.__v
+        ret.id = ret._id;
+        delete ret._id;
     }
 })
 

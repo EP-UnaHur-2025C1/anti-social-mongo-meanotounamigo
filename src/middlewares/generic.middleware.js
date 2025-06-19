@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const existsModelById = (modelo) => {
     return async (req, res, next) => {
       const id = req.params.id;
@@ -11,15 +13,13 @@ const existsModelById = (modelo) => {
     };
   };
   
-const validId = (req, res, next) => {
-    const id = req.params.id;
-    if (id <= 0) {
-      return res
-        .status(400)
-        .json({ message: "Bad Request: No pueden ser un id negativo" });
-    }
-    next();
-  };
+const validId = (paramName = "id") => (req, res, next) => {
+  const id = req.params[paramName];
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: `El ID '${paramName}' no es válido` });
+  }
+  next();
+};
   
 const schemaValidator = (schema) => {
     return (req, res, next) => {

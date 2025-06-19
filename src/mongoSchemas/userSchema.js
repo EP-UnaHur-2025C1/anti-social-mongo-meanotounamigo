@@ -1,5 +1,4 @@
 const { mongoose } = require('../bd/mongodb');
-const { Schema } = require('mongoose')
 
 const userSchema = new mongoose.Schema({
     nickname:{
@@ -7,13 +6,27 @@ const userSchema = new mongoose.Schema({
         unique:true, 
         minlength:[3,'El nombre debe tener al menos 3 letras'], 
         required:[true, 'El nombre es obligatorio'],
+        trim: true,
     },
     email:{
         type: String, 
         required: true, 
         unique:true, 
         required:[true, 'El mail es obligatorio'],
-    }
+        lowercase: true,
+    },
+    followers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    ],
+    following: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    ],
 },
 {
     collection:'usuarios'
@@ -21,10 +34,11 @@ const userSchema = new mongoose.Schema({
 );
 
 //Modifica cómo se ve a la salida
-postSchame.set("toJSON", {
+userSchema.set("toJSON", {
     transform:(_,ret)=>{
-        delete ret._v
-        delete ret._id
+        delete ret.__v
+        ret.id = ret._id;
+        delete ret._id;
     }
 })
 
