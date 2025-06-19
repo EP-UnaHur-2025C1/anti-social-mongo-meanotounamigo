@@ -1,4 +1,4 @@
-const { PostImage, Post, User } = require("../bd/models");
+const { PostImage, Post, User } = require('../mongoSchemas');
 
 const getPostImages = async (req, res) =>{
     try{
