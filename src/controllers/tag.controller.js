@@ -1,21 +1,13 @@
-const  { Tag, Post} = require("../bd/models")
+const  { Tag, Post } = require('../mongoSchemas')
 
-const getTags = async (req, res) =>{
-    try{
-        const data = await Tag.find({});
-        res.status(200).json(data);
-    } catch (err){
-        res.status(500).json({error: err.message});
-    }
+const getTags = async ( _ , res) =>{
+    const data = await Tag.find({});
+    res.status(200).json(data);
 };
 
 const getTagById = async (req, res) =>{
-    try{
-        const data = await Tag.findById(req.params.id);
-        if (!data) return res.status(404).json({message: 'El Tag ${data} no encontrado'});
-    } catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
+    const data = await Tag.findById(req.params.id);
+    res.status(200).json(data);
 };
 
 const createTag = async (req, res) =>{
@@ -24,31 +16,28 @@ const createTag = async (req, res) =>{
         await newTag.save();
         res.status(201).json(newTag);
     } catch (err){
-        res.status(400).json({error: err.mesagge});
+        res.status(400).json({error: err.message});
     }
 };
 
 const updateTagById = async (req, res) =>{
-    try{
-        const tag = await Tag.findById(req.params.id);
-        if (!tag) return res.status(404).json({message: 'El Tag ${tag} no encontrado'});
-
-        tag.nombre = req.body.nombre;
-        await tag.save()
-        res.status(200).json({message: 'El Tag ${tag} fue actualizado'});
-    }catch (err){
-        res.status(400).json({error: err.mesagge});
-    }
+    const {nombre} = req.body;
+    const tag = await Tag.findById(req.params.id);
+    tag.nombre = nombre;
+    await tag.save();
+    res.status(200).json({message: 'Tag actualizado correctamente', tag});
 };
 
-const deleteTagById = async (req, res) =>{
-    try{
-        const tag = await Tag.findByIdAndDelete(req.params.id);
-        if (!tag) return res.status(404).json({message: 'El Tag ${tag} no encontrado'});
-    } catch (err){
-        res.status(400).json({error: err.mesagge});
-    }
-}
+const deleteTagById = async (req, res) => {
+  const tag = await Tag.findByIdAndDelete(req.params.id);
+  res.status(200).json({ message: 'Tag eliminada correctamente', tag });
+};
+
+const getPostsByTagId = async (req, res) => {
+  const { tagId } = req.params;
+  const posts = await Post.find({ etiquetas: tagId });
+  res.status(200).json(posts);
+};
 
 module.exports = { 
     getTags, 
@@ -56,7 +45,5 @@ module.exports = {
     createTag, 
     updateTagById, 
     deleteTagById,
-    //assignTagToPost, 
-    //deletePostFromTag, 
-    //getPostsByTagId 
+    getPostsByTagId
 }
