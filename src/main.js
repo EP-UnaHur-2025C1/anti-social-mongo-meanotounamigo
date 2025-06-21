@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3009;
 //app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Importa las rutas
-const { userRoute, postRoute, tagRoute, commentRoute } = require('./routes'); //, postImageRoute, 
+const { userRoute, postRoute, postImageRoute, tagRoute, commentRoute } = require('./routes'); 
 
 // Middleware para procesar JSON
 app.use(express.json());
@@ -24,7 +24,7 @@ app.use(express.json());
 // Usa las rutas de post con el prefijo /post
 app.use('/post', postRoute);
 app.use('/user', userRoute);
-//app.use('/post-image', postImageRoute);
+app.use('/post-image', postImageRoute);
 app.use('/comment', commentRoute);
 app.use('/tag', tagRoute);
 
