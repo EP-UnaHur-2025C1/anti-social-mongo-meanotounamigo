@@ -1,4 +1,5 @@
 const { User } = require('../mongoSchemas')
+const { deleteUserRelatedData } = require('../utils/userCascadeHelper');
 
 //CRUD
 const getUsers = async ( _ , res) =>{
@@ -27,8 +28,14 @@ const updateUserById = async (req, res) => {
 };
 
 const deleteUserById = async (req, res) => {
-  await req.user.deleteOne();
-  res.status(200).json({ message: 'Usuario eliminado correctamente', user: req.user });
+  try {
+    await deleteUserRelatedData(req.user._id);
+    await req.user.deleteOne();
+    res.status(200).json({ message: "Usuario y sus datos asociados eliminados correctamente" });
+  } catch (err) {
+    console.error("Error al eliminar usuario:", err);
+    res.status(500).json({ error: "No se pudo eliminar el usuario y sus datos relacionados" });
+  }
 };
 
 module.exports = {
