@@ -1,51 +1,37 @@
-const { PostImage, Post, User } = require('../mongoSchemas');
+const { PostImage } = require('../mongoSchemas');
 
-const getPostImages = async (req, res) =>{
-    try{
-        const data = await PostImage.find({});
-        res.status(200).json(data);
-    } catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
+const getPostImages = async (_, res) => {
+    const postImages = await PostImage.find({});
+    res.status(200).json(postImages);
 };
 
-const getPostImageById = async (req, res) =>{
-    try{
-        const data = await PostImage.findById(req.params.id);
-        if (!data) return res.status(404).json({message: 'La imagen no encontrado'})
-    }catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
+const getPostImageById = async (req, res) => {
+  const postImage = req.postImage
+  res.status(200).json(postImage);
 };
 
-const deletePostImageById = async (req, res) =>{
-    try{
-        const data = await PostImage.findByIdAndDelete(req.params.id);
-        if (!data) return res.status(404).json({message: 'La imagen no encontrado'});
-    }catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
-};
+const createPostImage = async (req, res) => {
+    const newImage = await PostImage.create(req.body);
+    res.status(201).json({ message: "Imagen creada con éxito", image: newImage });
+}
 
 const updatePostImageById = async (req, res) => {
-    try{
-        const { url } = req.body;
-        const postImage = await PostImage.findById(req.params.id);
-        if (!postImage) return res.status(404).json({message: 'La imagen no encontrado'});
-
-        postImage.url = url;
-        await postImage.save();
-        res.status(200).json({message: 'La imagen fue actualizada'});
-    }catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
+    const { url } = req.body;
+    const postImage = req.postImage;
+    postImage.url = url;
+    await postImage.save();
+    res.status(200).json({message: 'La imagen fue actualizada'});
 }
+
+const deletePostImageById = async (req, res) => {
+    await req.postImage.deleteOne();
+    res.status(200).json({ message: 'Imagen eliminada con éxito' });
+};
 
 module.exports = {
   getPostImages,
   getPostImageById,
-  deletePostImageById,
+  createPostImage,
   updatePostImageById,
-  //getPostImageWithPost,
-  //getPostImageWithPostAndUser
+  deletePostImageById,
 };
