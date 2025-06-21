@@ -1,17 +1,16 @@
 const mongoose = require("mongoose");
 
-const existsModelById = (modelo) => {
-    return async (req, res, next) => {
-      const id = req.params.id;
-      const data = await modelo.findById(id);
-      if (!data) {
-        return res
-          .status(404)
-          .json({ message: `El id ${id} no se encuentra registrado`});
-      }
-      next();
-    };
+const existsModelById = (modelo, nombreEnReq = "model") => {
+  return async (req, res, next) => {
+    const id = req.params.id;
+    const data = await modelo.findById(id);
+    if (!data) {
+      return res.status(404).json({ message: `El ID ${id} no se encuentra registrado` });
+    }
+    req[nombreEnReq] = data;
+    next();
   };
+};
   
 const validId = (paramName = "id") => (req, res, next) => {
   const id = req.params[paramName];
