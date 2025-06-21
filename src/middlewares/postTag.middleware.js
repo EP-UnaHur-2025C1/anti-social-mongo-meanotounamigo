@@ -1,28 +1,25 @@
-const { Post, Tag } = require('../mongoSchemas');
+const preventDuplicateTag = (req, res, next) => {
+  const { tagId } = req.body;
+  const post = req.post;
 
-const existsPostById = async (req, res, next) => {
-  const { postId } = req.params;
-  const post = await Post.findById(postId);
-  if (!post) return res.status(404).json({ message: `El post con ID ${postId} no existe` });
-  req.post = post;
-  next();
-};
-
-const existsTagById = async (req, res, next) => {
-  const { tagId } = req.params;
-  const tag = await Tag.findById(tagId);
-  if (!tag) return res.status(404).json({ message: `La etiqueta con ID ${tagId} no existe` });
-  req.tag = tag;
-  next();
-};
-
-const postHasTag = (req, res, next) => {
-  const { tagId } = req.params;
-  const tagExists = req.post.etiquetas.includes(tagId);
-  if (tagExists) {
-    return res.status(400).json({ message: `El post ya tiene asignada la etiqueta ${tagId}` });
+  const exists = post.etiquetas.some(id => id.toString() === tagId);
+  if (exists) {
+    return res.status(400).json({ message: "El post ya contiene esa etiqueta" });
   }
+
   next();
 };
 
-module.exports = { existsPostById, existsTagById, postHasTag };
+const requireExistingTag = (req, res, next) => {
+  const { tagId } = req.body;
+  const post = req.post;
+
+  const hasTag = post.etiquetas.some(id => id.toString() === tagId);
+  if (!hasTag) {
+    return res.status(404).json({ message: "El post no contiene esa etiqueta" });
+  }
+
+  next();
+};
+
+module.exports = {preventDuplicateTag, requireExistingTag };

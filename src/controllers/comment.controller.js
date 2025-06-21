@@ -1,52 +1,49 @@
-const { Comment, Post, User } = require('../mongoSchemas');
+const { Comment } = require("../mongoSchemas");
 
-const deleteCommentById = async (req, res) =>{
-    try{
-        const data = await Comment.findByIdAndDelete(req.params.id);
-        if (!data) return res.status(404).json({message: 'Comentario no encontrado'});
-        res.status(200).json({message: 'Comentario eliminado', removed})
-    }catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
+const getComments = async ( _ , res) =>{
+    const comments = await Comment.find({})
+    .populate("user", "nickName")
+    .populate("post", "descripcion");
+    res.status(200).json(comments);
 };
 
-const getCommentById = async (req, res) =>{
-    try{
-        const comment = await Comment.findById(req.params.id);
-        if (!comment) return res.status(404).json({message: 'Comentario no encontrado'})
-    }catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
+const getCommentById = async (req, res) => {
+  const comment = await req.comment;
+  await comment.populate("user", "nickName");
+  await comment.populate("post", "descripcion");
+  res.status(200).json(comment);
+};
+
+const createComment = async (req, res) => {
+  const { contenido, fecha, user, post } = req.body;
+  const fechaComentario = fecha ? new Date(fecha) : new Date();
+  const nuevoComentario = await Comment.create({
+    contenido,
+    fecha: fechaComentario,
+    user,
+    post
+  });
+  res.status(201).json(nuevoComentario);
 };
 
 const updateCommentById = async (req, res) => {
-    try{
-        const { contenido } = req.body;
-        const comment = await Comment.findById(req.params.id);
-        if (!comment) return res.status(404).json({message: 'Comentario no encontrado'});
+  const { contenido, fecha } = req.body;
+  const comment = req.comment;
+  comment.contenido = contenido;
+  if (fecha) comment.fecha = new Date(fecha);
+  await comment.save();
+  res.status(200).json({ message: "Comentario actualizado" });
+};
 
-        comment.contenido = contenido;
-        await comment.save();
-        res.status(200).json({message: 'El comentario fue actualizada'});
-    }catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
-}
-
-const getComments = async (req, res) =>{
-    try{
-        const data = await Comment.find({});
-        res.status(200).json(data);
-    } catch (err){
-        res.status(500).json({error: err.mesagge});
-    }
+const deleteCommentById = async (req, res) =>{
+    await req.comment.deleteOne();
+    res.status(200).json({ message: "Comentario eliminado correctamente" });
 };
 
 module.exports = { 
-    deleteCommentById, 
-    getCommentById, 
-    updateCommentById, 
-    getComments, 
-    //getCommentWithPost, 
-    //getCommentWithPostAndUser
+    createComment,
+    getComments,
+    getCommentById,
+    updateCommentById,
+    deleteCommentById
  };

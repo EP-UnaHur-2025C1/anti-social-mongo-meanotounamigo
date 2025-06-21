@@ -1,72 +1,79 @@
-const { Post } = require('../mongoSchemas'); //User, Comment, PostImage
+const { Post, Comment } = require('../mongoSchemas');
+const { seisMesesAtras } = require("../utils/dateHelpers");
 
-const getPosts = async ( _ , res) =>{
-    const data = await Post.find({}).populate("etiquetas", "nombre");
-    res.status(200).json(data);
+const getPosts = async ( _ , res) => {
+  const posts = await Post.find({});
+  res.status(200).json(posts);
+};
+
+//Devuelve toda la información con el control de los cometarios antiguos incluido
+const getPostWithAllInfo = async (req, res) => {
+  const comentarios = await Comment.find({
+    post: req.post._id,
+    fecha: { $gte: seisMesesAtras() }
+  }).populate("user", "nombre"); // si querés autor
+
+  await req.post.populate("user", "nombre email");
+  await req.post.populate("etiquetas", "nombre");
+  await req.post.populate("imagenes");
+
+  const postConComentarios = req.post.toObject();
+  postConComentarios.comentarios = comentarios;
+
+  res.status(200).json(postConComentarios);
 };
 
 const getPostById = async (req, res) =>{
-    const data = await Post.findById(req.params.id);
-    res.status(200).json(data);
+    const post = req.post;
+    res.status(200).json(post);
 };
 
 const createPost = async (req, res) => {
-    try{
-        const newPost = new Post(req.body);
-        await newPost.save();
-        res.status(201).json(newPost);
-    } catch (err){
-        res.status(400).json({error: err.message});
-    }
+    const postData = {
+      ...req.body, //Desarma todo lo que venga en el body
+      fecha: req.body.fecha || new Date().toISOString().slice(0, 10) //como la fecha es opcional si viene vacia se completa con la fecha actual
+    };
+    const newPost = await Post.create(postData);
+    res.status(201).json(newPost);
 };
 
 const updatePostById = async (req, res) => {
-  const { descripcion, imagenes, etiquetas } = req.body;
-  const post = await Post.findById(req.params.id);
+  const { descripcion, imagenes, etiquetas, fecha } = req.body;
+  const post = req.post;
   if (descripcion !== undefined) post.descripcion = descripcion;
   if (imagenes !== undefined) post.imagenes = imagenes;
   if (etiquetas !== undefined) post.etiquetas = etiquetas;
+  if (fecha !== undefined) post.fecha = fecha;
   await post.save();
-  res.status(200).json({ message: 'El post fue actualizado correctamente' });
+  res.status(200).json({ message: "El post fue actualizado correctamente", post });
 };
 
-const deletePostById = async (req, res) =>{
-    const post = await Post.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Post eliminado correctamente', post})
+const deletePostById = async (req, res) => {
+  await req.post.deleteOne();
+  res.status(200).json({ message: "Post eliminado correctamente" });
 };
 
 const assignTagToPost = async (req, res) => {
-  const { tagId } = req.params;
-  req.post.etiquetas.push(tagId);
+  req.post.etiquetas.push(req.body.tagId);
   await req.post.save();
   res.status(200).json({ message: "Etiqueta agregada al post", post: req.post });
 };
 
 const deleteTagFromPost = async (req, res) => {
-  const { tagId } = req.params;
   req.post.etiquetas = req.post.etiquetas.filter(
-    (id) => id.toString() !== tagId
+    id => id.toString() !== req.body.tagId
   );
   await req.post.save();
   res.status(200).json({ message: "Etiqueta eliminada del post", post: req.post });
 };
 
-const getTagsByPostId = async (req, res) => {
-  const { postId } = req.params;
-  const post = await Post.findById(postId).populate("etiquetas");
-  res.status(200).json(post.etiquetas);
-};
-
 module.exports = { 
-    getPosts, 
+    getPosts,
+    getPostWithAllInfo,
     getPostById, 
     createPost,
     deletePostById, 
-    updatePostById, 
-    //getPostWithUser, 
-    //getPostWithComments, 
-    //getPostWithImages, 
+    updatePostById,
     assignTagToPost,
     deleteTagFromPost,
-    getTagsByPostId 
 };
