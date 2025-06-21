@@ -1,5 +1,6 @@
 const { Post, Comment } = require('../mongoSchemas');
 const { seisMesesAtras } = require("../utils/dateHelpers");
+const { deleteAssociatedPostData } = require('../utils/postCascadeHelpers');
 
 const getPosts = async ( _ , res) => {
   const posts = await Post.find({});
@@ -49,9 +50,16 @@ const updatePostById = async (req, res) => {
 };
 
 const deletePostById = async (req, res) => {
-  await req.post.deleteOne();
-  res.status(200).json({ message: "Post eliminado correctamente" });
+  try {
+    await deleteAssociatedPostData(req.post);
+    await req.post.deleteOne();
+    res.status(200).json({ message: "Post y datos asociados eliminados correctamente" });
+  } catch (err) {
+    console.error("Error al eliminar el post:", err);
+    res.status(500).json({ error: "No se pudo eliminar el post y sus datos relacionados" });
+  }
 };
+
 
 const assignTagToPost = async (req, res) => {
   req.post.etiquetas.push(req.body.tagId);
@@ -67,6 +75,28 @@ const deleteTagFromPost = async (req, res) => {
   res.status(200).json({ message: "Etiqueta eliminada del post", post: req.post });
 };
 
+const assignImagesToPost = async (req, res) => {
+  const { imageIds } = req.body;
+  req.post.imagenes.push(...imageIds);
+  await req.post.save();
+  res.status(200).json({
+    message: "Imágenes asociadas correctamente al post",
+    post: req.post,
+  });
+};
+
+const deleteImagesFromPost = async (req, res) => {
+  const { imageIds } = req.body;
+  req.post.imagenes = req.post.imagenes.filter(
+    id => !imageIds.includes(id.toString())
+  );
+  await req.post.save();
+  res.status(200).json({
+    message: "Imágenes eliminadas del post correctamente",
+    post: req.post,
+  });
+};
+
 module.exports = { 
     getPosts,
     getPostWithAllInfo,
@@ -76,4 +106,6 @@ module.exports = {
     updatePostById,
     assignTagToPost,
     deleteTagFromPost,
+    assignImagesToPost,
+    deleteImagesFromPost
 };
