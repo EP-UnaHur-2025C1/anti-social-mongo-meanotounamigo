@@ -1,5 +1,4 @@
 const { mongoose } = require('../bd/mongodb');
-const { Schema } = require('mongoose')
 
 const postImageSchema = new mongoose.Schema({
     url:{
@@ -8,7 +7,7 @@ const postImageSchema = new mongoose.Schema({
     }
 },
 {
-    collation:'posteoImagen'
+    collection:'posteoImagen'
 }
 );
 
