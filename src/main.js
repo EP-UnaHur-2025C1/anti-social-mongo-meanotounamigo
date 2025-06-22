@@ -18,7 +18,6 @@ app.use(morgan("tiny"));
 //app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Middleware para procesar JSON
 app.use(express.json());
-// Importa las rutas
 const { userRoute, postRoute, postImageRoute, tagRoute, commentRoute } = require('./routes'); 
 
 // Middleware para procesar JSON
