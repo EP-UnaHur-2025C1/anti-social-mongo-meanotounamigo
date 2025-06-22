@@ -6,16 +6,14 @@ const PORT = process.env.PORT || 3009;
 const morgan = require("morgan");
 
 app.use(morgan("tiny"));
-//Swagger
-//const path = require('path');
-//const swaggerUi = require('swagger-ui-express');
-//const YAML = require('yamljs');
-// Construir ruta absoluta al archivo swagger.yaml
-//const swaggerPath = path.join(__dirname, '..', 'docs', 'swagger.yaml');
-//const swaggerDocument = YAML.load(swaggerPath);
+///Swagger
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const path = require('path');
+const swaggerDocument = YAML.load(path.join(__dirname, '../docs/swagger.yaml'));
 
-//Usa la ruta para el swagger
-//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//Ruta del swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Middleware para procesar JSON
 app.use(express.json());
 const { userRoute, postRoute, postImageRoute, tagRoute, commentRoute } = require('./routes'); 
