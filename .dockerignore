@@ -1,9 +1,6 @@
 # Módulos locales de Node
 node_modules
 
-# Configuraciones sensibles
-.env
-
 # Datos persistentes de Mongo
 mongo_data/
 

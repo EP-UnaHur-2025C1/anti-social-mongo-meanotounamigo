@@ -40,8 +40,8 @@ services:
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
       - REDIS_URL=redis://:1qaz!QAZ@redis:6379
-      - REDIS_PASSWORD=1qaz!QAZ
-      - REDIS_TTL=60
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_TTL=${REDIS_TTL}
     volumes:
       - .:/usr/src/app
     working_dir: /usr/src/app
