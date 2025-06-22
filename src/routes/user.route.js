@@ -4,13 +4,14 @@ const { userController} = require("../controllers"); //followerController
 const { genericMiddleware} = require("../middlewares"); //followerMiddleware
 const { userSchema} = require('../schemas');
 const { User } = require("../mongoSchemas");
+const { checkCache, deleteCache } = require("../middlewares/redis.middleware")
 
 //CRUD
-router.get("/", userController.getUsers);
-router.get("/:id", genericMiddleware.validId(), genericMiddleware.existsModelById(User, "user"), userController.getUserById);
+router.get("/", checkCache, userController.getUsers);
+router.get("/:id", checkCache, genericMiddleware.validId(), genericMiddleware.existsModelById(User, "user"), userController.getUserById);
 router.post("/", genericMiddleware.schemaValidator(userSchema), userController.createUser);
-router.put("/:id", genericMiddleware.validId(), genericMiddleware.existsModelById(User, "user"), genericMiddleware.schemaValidator(userSchema), userController.updateUserById);
-router.delete("/:id", genericMiddleware.validId(), genericMiddleware.existsModelById(User, "user"), userController.deleteUserById);
+router.put("/:id", deleteCache, genericMiddleware.validId(), genericMiddleware.existsModelById(User, "user"), genericMiddleware.schemaValidator(userSchema), userController.updateUserById);
+router.delete("/:id", deleteCache, genericMiddleware.validId(), genericMiddleware.existsModelById(User, "user"), userController.deleteUserById);
 
 /*
 // Un usuario puede manejar seguidores y seguidos

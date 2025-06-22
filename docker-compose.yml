@@ -10,6 +10,8 @@ services:
       - 27017:27017
     volumes:
       - ./mongo_data:/data/db
+    networks:
+      - backend-net
 
   mongo-express:
     image: mongo-express
@@ -21,6 +23,8 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH: false
+    networks:
+      - backend-net
 
   backend:
     build: .
@@ -35,7 +39,7 @@ services:
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
       - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://:1qaz!QAZ@redis:6379
       - REDIS_PASSWORD=1qaz!QAZ
       - REDIS_TTL=60
     volumes:
@@ -44,9 +48,34 @@ services:
     depends_on:
       - mongo
       - redis
+    networks:
+      - backend-net
+      - redis-net
 
   redis:
-    image: redis
-    restart: always
+    image: redis:latest
+    container_name: redis
+    command: ["redis-server", "--requirepass", "1qaz!QAZ"]
     ports:
       - 6379:6379
+    volumes:
+      - redis-data:/data
+    networks:
+      - redis-net
+
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - 5540:5540
+    volumes:
+      - redis_insight:/db
+    networks:
+      - redis-net
+
+volumes:
+  redis-data:
+  redis_insight:
+
+networks:
+  backend-net:
+  redis-net:

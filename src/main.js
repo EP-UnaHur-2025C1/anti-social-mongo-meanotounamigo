@@ -3,7 +3,9 @@ const express = require ('express');
 const {connectToDataBase} = require('./bd/mongodb');
 const app = express(); 
 const PORT = process.env.PORT || 3009;
+const morgan = require("morgan");
 
+app.use(morgan("tiny"));
 //Swagger
 //const path = require('path');
 //const swaggerUi = require('swagger-ui-express');
@@ -14,7 +16,8 @@ const PORT = process.env.PORT || 3009;
 
 //Usa la ruta para el swagger
 //app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
+// Middleware para procesar JSON
+app.use(express.json());
 // Importa las rutas
 const { userRoute, postRoute, postImageRoute, tagRoute, commentRoute } = require('./routes'); 
 
@@ -28,17 +31,23 @@ app.use('/post-image', postImageRoute);
 app.use('/comment', commentRoute);
 app.use('/tag', tagRoute);
 
+// Importamos Redis
+const redisClient = require('./redis/redis');
 
-app.listen(PORT, async(err) =>{
-    if(err){
-        console.error(err.message);
-        process.exit(1);
-    }
-    try{
-        await connectToDataBase(); 
-    }catch (dbError){
-        console.error(dbError.message);
-        process.exit(1);       
-    }
-    console.log (`Servidor escuchando en el puerto http://0.0.0.0:${PORT}`);
-});
+(async () => {
+  try {
+    await redisClient.connect();
+    console.log("Redis conectado correctamente");
+
+    await connectToDataBase();
+    console.log("Mongo conectado correctamente");
+
+    app.listen(PORT, () => {
+      console.log(`La app se inició en el puerto http://0.0.0.0:${PORT}`);
+    });
+
+  } catch (err) {
+    console.error("Error iniciando la app:", err);
+    process.exit(1);
+  }
+})();

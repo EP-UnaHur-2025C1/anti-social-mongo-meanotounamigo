@@ -1,16 +1,20 @@
 const { Comment } = require("../mongoSchemas");
+const redisClient = require ("../redis/redis");
+const ttl = parseInt(process.env.REDIS_TTL) || 60;
 
-const getComments = async ( _ , res) =>{
-    const comments = await Comment.find({})
+const getComments = async (_, res) => {
+  const comments = await Comment.find({})
     .populate("user", "nickName")
     .populate("post", "descripcion");
-    res.status(200).json(comments);
+  await redisClient.set("comments:all", JSON.stringify(comments), { EX: ttl });
+  res.status(200).json(comments);
 };
 
 const getCommentById = async (req, res) => {
-  const comment = await req.comment;
+  const comment = req.comment;
   await comment.populate("user", "nickName");
   await comment.populate("post", "descripcion");
+  await redisClient.set(`comment:${comment._id}`, JSON.stringify(comment), { EX: ttl });
   res.status(200).json(comment);
 };
 
@@ -23,6 +27,7 @@ const createComment = async (req, res) => {
     user,
     post
   });
+  await redisClient.del("comments:all");
   res.status(201).json(nuevoComentario);
 };
 
@@ -32,13 +37,18 @@ const updateCommentById = async (req, res) => {
   comment.contenido = contenido;
   if (fecha) comment.fecha = new Date(fecha);
   await comment.save();
+  await redisClient.del("comments:all");
+  await redisClient.set(`comment:${comment._id}`, JSON.stringify(comment), { EX: ttl });
   res.status(200).json({ message: "Comentario actualizado" });
 };
 
-const deleteCommentById = async (req, res) =>{
-    await req.comment.deleteOne();
-    res.status(200).json({ message: "Comentario eliminado correctamente" });
+const deleteCommentById = async (req, res) => {
+  await req.comment.deleteOne();
+  await redisClient.del("comments:all");
+  await redisClient.del(`comment:${req.comment._id}`);
+  res.status(200).json({ message: "Comentario eliminado correctamente" });
 };
+
 
 module.exports = { 
     createComment,
