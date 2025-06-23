@@ -19,7 +19,7 @@ router.post("/:id/tag", genericMiddleware.validId(), genericMiddleware.existsMod
 router.delete("/:id/tag", deleteCache, genericMiddleware.validId(), genericMiddleware.existsModelById(Post, "post"), genericMiddleware.schemaValidator(tagAssignmentSchema), postTagMiddleware.requireExistingTag, postController.deleteTagFromPost);
 
 // Para subir o eliminar imagenes
-router.post("/:id/images", genericMiddleware.validId(), genericMiddleware.existsModelById(Post, "post"), genericMiddleware.schemaValidator(imageAssigmentSchema), postImageMiddleware.preventDuplicateImages, postController.assignImagesToPost);
+router.post("/:id/images", genericMiddleware.validId(), genericMiddleware.existsModelById(Post, "post"), genericMiddleware.schemaValidator(imageAssigmentSchema), postImageMiddleware.preventDuplicateImages, postImageMiddleware.preventImageReuseAcrossPosts, postController.assignImagesToPost);
 router.delete("/:id/images", deleteCache, genericMiddleware.validId(), genericMiddleware.existsModelById(Post, "post"), genericMiddleware.schemaValidator(imageAssigmentSchema), postImageMiddleware.requireExistingImage, postController.deleteImagesFromPost);
 
 module.exports = router;

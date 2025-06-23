@@ -13,12 +13,13 @@ const updatePostSchema = Joi.object({
       "string.pattern.base": "La fecha debe tener el formato YYYY-MM-DD."
     }),
 
-  imagenes: Joi.array().items(Joi.string().uri().messages({
-    "string.uri": "Cada imagen debe ser una URL válida."
-  })),
+  imagenes: Joi.array().items(
+    Joi.string().regex(/^[0-9a-fA-F]{24}$/).message("ID de imagen inválido.")
+  ).optional(),
 
   etiquetas: Joi.array().items(
     Joi.string().regex(/^[0-9a-fA-F]{24}$/).message("ID de etiqueta inválido.")
-  )
+  ).optional()
 });
+
 module.exports = updatePostSchema;

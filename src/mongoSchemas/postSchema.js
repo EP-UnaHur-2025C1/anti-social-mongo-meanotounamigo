@@ -20,10 +20,10 @@ const postSchema = new mongoose.Schema({
         }
     },
 
-    imagenes: {
-        type: [String],
-        default: [],
-    },
+    imagenes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PostImage',
+    }],
 
     etiquetas: [{
         type: Schema.Types.ObjectId,
