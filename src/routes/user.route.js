@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
-const { userController} = require("../controllers"); //followerController
-const { genericMiddleware} = require("../middlewares"); //followerMiddleware
+const { userController, followerController} = require("../controllers");
+const { genericMiddleware, followerMiddleware} = require("../middlewares");
 const { userSchema} = require('../schemas');
 const { User } = require("../mongoSchemas");
 const { checkCache, deleteCache } = require("../middlewares/redis.middleware")
