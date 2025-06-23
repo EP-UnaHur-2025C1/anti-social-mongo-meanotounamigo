@@ -7,3 +7,9 @@ mongo_data/
 # Archivos temporales o de sistema
 .DS_Store
 Thumbs.db
+
+.git
+.gitignore
+.env*
+*.md
+*.log
