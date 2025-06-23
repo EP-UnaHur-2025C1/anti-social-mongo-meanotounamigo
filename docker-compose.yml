@@ -1,13 +1,12 @@
 services:
-
   mongo:
     image: mongo:7.0
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
       - ./mongo_data:/data/db
     networks:
@@ -17,47 +16,21 @@ services:
     image: mongo-express
     restart: always
     ports:
-      - 8081:8081
+      - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: "mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongo:27017/"
       ME_CONFIG_BASICAUTH: false
     networks:
       - backend-net
 
-  backend:
-    build: .
-    container_name: backend
-    ports:
-      - 3009:3009
-    environment:
-      - NODE_ENV=docker
-      - PORT=3009
-      - MONGO_URI=mongodb://root:example@mongo:27017/
-      - COMMENT_EXPIRATION_MONTHS=6
-      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
-      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
-      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
-      - REDIS_URL=redis://:1qaz!QAZ@redis:6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_TTL=${REDIS_TTL}
-    volumes:
-      - .:/usr/src/app
-    working_dir: /usr/src/app
-    depends_on:
-      - mongo
-      - redis
-    networks:
-      - backend-net
-      - redis-net
-
   redis:
     image: redis:latest
     container_name: redis
-    command: ["redis-server", "--requirepass", "1qaz!QAZ"]
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
     ports:
-      - 6379:6379
+      - "6379:6379"
     volumes:
       - redis-data:/data
     networks:
@@ -66,10 +39,35 @@ services:
   redisinsight:
     image: redislabs/redisinsight:latest
     ports:
-      - 5540:5540
+      - "5540:5540"
     volumes:
       - redis_insight:/db
     networks:
+      - redis-net
+
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      COMMENT_EXPIRATION_MONTHS: ${COMMENT_EXPIRATION_MONTHS}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      REDIS_URL: ${REDIS_URL}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_TTL: ${REDIS_TTL}
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    depends_on:
+      - mongo
+      - redis
+    networks:
+      - backend-net
       - redis-net
 
 volumes:
