@@ -5,7 +5,7 @@ const checkCache = async (req, res, next) => {
 
   // Determinamos el tipo de recurso según la ruta base
   if (req.baseUrl.includes('/user')) prefijo = 'user';
-  else if (req.baseUrl.includes('/postImage')) prefijo = 'postImage';
+  else if (req.baseUrl.includes('/post-image')) prefijo = 'postImage';
   else if (req.baseUrl.includes('/post')) prefijo = 'post';
   else if (req.baseUrl.includes('/comment')) prefijo = 'comment';
   else if (req.baseUrl.includes('/tag')) prefijo = 'tag';
@@ -29,7 +29,7 @@ const deleteCache = async (req, res, next) => {
 
   // Determinamos el tipo de recurso según la ruta base
   if (req.baseUrl.includes('/user')) prefijo = 'user';
-  else if (req.baseUrl.includes('/postImage')) prefijo = 'postImage';
+  else if (req.baseUrl.includes('/post-image')) prefijo = 'postImage';
   else if (req.baseUrl.includes('/post')) prefijo = 'post';
   else if (req.baseUrl.includes('/comment')) prefijo = 'comment';
   else if (req.baseUrl.includes('/tag')) prefijo = 'tag';

@@ -1,3 +1,5 @@
+const { Post } = require('../mongoSchemas');
+
 const preventDuplicateImages = async (req, res, next) => {
   const newIds = req.body.imageIds.map(id => id.toString());
   const existing = req.post.imagenes.map(id => id.toString());
@@ -23,4 +25,21 @@ const requireExistingImage = async (req, res, next) => {
   next();
 };
 
-module.exports = {preventDuplicateImages, requireExistingImage };
+const preventImageReuseAcrossPosts = async (req, res, next) => {
+  const { imageIds } = req.body;
+  const otherPostsUsing = await Post.find({
+    _id: { $ne: req.post._id },
+    imagenes: { $in: imageIds }
+  });
+
+  if (otherPostsUsing.length > 0) {
+    return res.status(400).json({
+      message: "Una o más imágenes ya están usadas en otro post",
+      conflictingPostIds: otherPostsUsing.map(p => p._id)
+    });
+  }
+
+  next();
+};
+
+module.exports = {preventDuplicateImages, requireExistingImage, preventImageReuseAcrossPosts };
