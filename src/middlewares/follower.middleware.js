@@ -49,7 +49,7 @@ const existsFollow = async (req, res, next) => {
         }
 
         // Verificar relación de seguimiento
-        const isFollowing = await currentUser.hasFollowing(userToFollow);
+        const isFollowing = currentUser.following.includes(userToFollow._id);
         
         if (req.method === 'POST') {
             if (isFollowing) {
