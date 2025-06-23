@@ -1,5 +1,5 @@
 const { User } = require('../mongoSchemas')
-const { deleteUserRelatedData } = require('../utils/userCascadeHelper');
+const { deleteUserRelatedData } = require('../utils');
 const redisClient = require("../redis/redis");
 const ttl = parseInt(process.env.REDIS_TTL) || 60;
 

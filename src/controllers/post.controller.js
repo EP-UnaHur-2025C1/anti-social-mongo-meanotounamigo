@@ -1,6 +1,5 @@
 const { Post, Comment } = require('../mongoSchemas');
-const { seisMesesAtras } = require("../utils/dateHelpers");
-const { deleteAssociatedPostData } = require('../utils/postCascadeHelpers');
+const { seisMesesAtras, deleteAssociatedPostData } = require("../utils");
 const redisClient = require("../redis/redis");
 const ttl = parseInt(process.env.REDIS_TTL) || 60;
 
@@ -49,7 +48,6 @@ const updatePostById = async (req, res) => {
   const post = req.post;
 
   if (descripcion !== undefined) post.descripcion = descripcion;
-  if (imagenes !== undefined) post.imagenes = imagenes;
   if (etiquetas !== undefined) post.etiquetas = etiquetas;
   if (fecha !== undefined) post.fecha = fecha;
 
