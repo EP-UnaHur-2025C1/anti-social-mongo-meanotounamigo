@@ -26,7 +26,7 @@ const followUser = async (req, res) => {
   } catch (error) {
     console.error('Error en followUser:', error);
     res.status(500).json({ 
-      messege: 'Error al seguir el usuario'
+      message: 'Error al seguir el usuario'
     });
   }
 };
@@ -66,7 +66,7 @@ const getFollowers = async (req, res) => {
 
     const user = await User.findById(userId)
       .select('followers')
-      .populate('followers', 'username ');
+      .populate('followers', 'nickname ');
 
     if (!user) {
       return res.status(404).json({
@@ -84,8 +84,7 @@ const getFollowers = async (req, res) => {
     console.error('Error en getFollowers:', error);
     res.status(500).json({
       success: false,
-      error: 'Error al obtener seguidores',
-      details: error.message
+      message: 'Error al obtener seguidores',
     });
   }
 };
@@ -96,7 +95,7 @@ const getFollowing = async (req, res) => {
 
     const user = await User.findById(userId)
       .select('following')
-      .populate('following', 'username')
+      .populate('following', 'nickname')
 
     if (!user) {
       return res.status(404).json({
