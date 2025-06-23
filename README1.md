@@ -1,3 +1,19 @@
+## CONSIGNA
+e solicita el modelado y desarrollo de un sistema backend para una red social llamada **“UnaHur Anti-Social Net”**, inspirada en plataformas populares que permiten a los usuarios realizar publicaciones y recibir comentarios sobre las mismas.
+
+# Contexto del Proyecto
+
+En una primera reunión con los sponsors del proyecto, se definieron los siguientes requerimientos para el desarrollo de un **MVP (Producto Mínimo Viable)**:
+
+- El sistema debe permitir que un usuario registrado realice una publicación (post), incluyendo **obligatoriamente una descripción**. De forma opcional, se podrán asociar **una o más imágenes** a dicha publicación.
+
+- Las publicaciones pueden recibir **comentarios** por parte de otros usuarios.
+
+- Las publicaciones pueden estar asociadas a **etiquetas (tags)**. Una misma etiqueta puede estar vinculada a múltiples publicaciones.
+
+- Es importante que los **comentarios más antiguos que X meses** (valor configurable mediante variables de entorno, por ejemplo, 6 meses) **no se muestren** en la visualización de los posteos.
+
+## IMPLEMENTACIÓN 
 En este proyecto se nos solicitó modificar un trabajo práctico anterior, originalmente implementado con una base de datos relacional, y adaptarlo para su uso con una base de datos no relacional. En esta oportunidad, la implementación se realizó utilizando MongoDB y Docker, y además incorporamos Redis como valor agregado.
 
 ## MONGO DB
@@ -20,16 +36,26 @@ npm i
 ```
 
 Inicializar entorno de desarrollo:
-```bash
-npm run dev
-```
+A. Crearse en raiz un .env 
+B.copias allí el contenido de .env.example 
+C.completar los campos vacios 
+
+# Mongo DB 
+USERNAME = se peude dejar en root, como se usa por defecto
+PASSWORD = se peude dejar en example, como se usa por defecto
+
+# Redis
+PASSWORD = 1qaz!QAZ
+
 
 ### Dockerizar la app
-1. Crea una imagen de la aplicación:
+Crea una imagen de la aplicación:
 ```bash
 docker-compose up -d
 ```
-2. Se podrá acceder a la aplicación desde la siguiente URL: [http://localhost:3009](http://localhost:3009).
+
+Se podrá acceder al servicio de MongoDB: [http://localhost:808]
+El puerto local de Redis es [http://localhost:5540]
 Si se desea cambiar el PORT o algun otro valor se puede modificar el archivo .env
 
 ## API
